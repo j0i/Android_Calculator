@@ -37,35 +37,44 @@ class CalculatorActivity : ComponentActivity() {
         setContent {
             CalculatorTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(.5f)
-                        .background(color = Color.Cyan),
-                        verticalAlignment = Alignment.Bottom
-                    ) {
-                        CalculatorColumn(modifier = Modifier.weight(1f)) {
-                            CalculatorButton("1")
-                            CalculatorButton( "4")
-                            CalculatorButton("7")
-                            CalculatorButton(imageVector = Icons.Filled.Backspace)
-                        }
-                        CalculatorColumn(modifier = Modifier.weight(1f)) {
-                            CalculatorButton("2")
-                            CalculatorButton( "5")
-                            CalculatorButton("8")
-                            CalculatorButton("0")
-                        }
-                        CalculatorColumn(modifier = Modifier.weight(1f)) {
-                            CalculatorButton("3")
-                            CalculatorButton( "6")
-                            CalculatorButton("9")
-                            CalculatorButton("=")
-                        }
-                        CalculatorColumn(modifier = Modifier.weight(1f)) {
-                            CalculatorButton("+")
-                            CalculatorButton( "-")
-                            CalculatorButton("/")
-                            CalculatorButton("*")
+                    Column(
+                        //horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .background(color = Color.Cyan)
+                            .fillMaxSize()
+                            .width(IntrinsicSize.Max),
+                        verticalArrangement = Arrangement.Bottom) {
+                        TextBox("Smonch")
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(.5f),
+                            verticalAlignment = Alignment.Bottom
+                        ) {
+                            CalculatorColumn(modifier = Modifier.weight(1f)) {
+                                CalculatorButton("1") { calculatorViewModel.calculatorButtonClick(it) }
+                                CalculatorButton("4") { calculatorViewModel.calculatorButtonClick(it) }
+                                CalculatorButton("7") { calculatorViewModel.calculatorButtonClick(it) }
+                                CalculatorButton(imageVector = Icons.Filled.Backspace)
+                            }
+                            CalculatorColumn(modifier = Modifier.weight(1f)) {
+                                CalculatorButton("2") { calculatorViewModel.calculatorButtonClick(it) }
+                                CalculatorButton("5") { calculatorViewModel.calculatorButtonClick(it) }
+                                CalculatorButton("8") { calculatorViewModel.calculatorButtonClick(it) }
+                                CalculatorButton("0") { calculatorViewModel.calculatorButtonClick(it) }
+                            }
+                            CalculatorColumn(modifier = Modifier.weight(1f)) {
+                                CalculatorButton("3") { calculatorViewModel.calculatorButtonClick(it) }
+                                CalculatorButton("6") { calculatorViewModel.calculatorButtonClick(it) }
+                                CalculatorButton("9") { calculatorViewModel.calculatorButtonClick(it) }
+                                CalculatorButton("=") { calculatorViewModel.calculatorButtonClick(it) }
+                            }
+                            CalculatorColumn(modifier = Modifier.weight(1f)) {
+                                CalculatorButton("+") { calculatorViewModel.calculatorButtonClick(it) }
+                                CalculatorButton("-") { calculatorViewModel.calculatorButtonClick(it) }
+                                CalculatorButton("/") { calculatorViewModel.calculatorButtonClick(it) }
+                                CalculatorButton("*") { calculatorViewModel.calculatorButtonClick(it) }
+                            }
                         }
                     }
                 }
@@ -91,9 +100,11 @@ fun CalculatorColumn(modifier: Modifier, content: @Composable () -> Unit){
 @Composable
 fun CalculatorButton(text: String? = null, imageVector: ImageVector? = null, action: ((value: String) -> Unit)? = null){
     Box(
-        modifier = Modifier.clickable {
-            action?.invoke(text)
-        }
+        modifier = Modifier
+            .clickable {
+                if (text != null && action != null)
+                    action?.invoke(text)
+            }
             .size(80.dp)
             .clip(RoundedCornerShape(40.dp))
             .background(Color.Gray),
@@ -112,4 +123,25 @@ fun CalculatorButton(text: String? = null, imageVector: ImageVector? = null, act
             )
         }
     }
+}
+
+@Composable
+fun TextBox(text: String? = null){
+   Row(
+       verticalAlignment = Alignment.CenterVertically,
+       horizontalArrangement = Arrangement.Start,
+       modifier = Modifier.padding(15.dp, 0.dp, 0.dp, 15.dp).fillMaxWidth()
+   ){
+       Box(
+           modifier = Modifier.border(BorderStroke(1.dp, color = Color.Black))
+       ){
+           if (text != null) {
+               Text(
+                   text,
+                   color = Color.Black,
+                   fontSize = 20.sp
+               )
+           }
+       }
+   }
 }
