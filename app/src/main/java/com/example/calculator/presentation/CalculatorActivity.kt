@@ -1,11 +1,13 @@
-package com.example.calculator
+package com.example.calculator.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -23,8 +25,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.calculator.ui.theme.CalculatorTheme
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class CalculatorActivity : ComponentActivity() {
+    val calculatorViewModel : CalculatorViewModel by viewModels() // injection of view model
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -54,6 +61,12 @@ class CalculatorActivity : ComponentActivity() {
                             CalculatorButton("9")
                             CalculatorButton("=")
                         }
+                        CalculatorColumn(modifier = Modifier.weight(1f)) {
+                            CalculatorButton("+")
+                            CalculatorButton( "-")
+                            CalculatorButton("/")
+                            CalculatorButton("*")
+                        }
                     }
                 }
             }
@@ -76,9 +89,11 @@ fun CalculatorColumn(modifier: Modifier, content: @Composable () -> Unit){
 }
 
 @Composable
-fun CalculatorButton(text: String? = null, imageVector: ImageVector? = null, action: (() -> Unit)? = null){
+fun CalculatorButton(text: String? = null, imageVector: ImageVector? = null, action: ((value: String) -> Unit)? = null){
     Box(
-        modifier = Modifier
+        modifier = Modifier.clickable {
+            action?.invoke(text)
+        }
             .size(80.dp)
             .clip(RoundedCornerShape(40.dp))
             .background(Color.Gray),
@@ -88,7 +103,6 @@ fun CalculatorButton(text: String? = null, imageVector: ImageVector? = null, act
             Text(
                 text,
                 fontSize = 20.sp,
-                modifier = Modifier
             )
         }
         imageVector?.let {
